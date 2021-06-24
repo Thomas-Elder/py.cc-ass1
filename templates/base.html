@@ -10,14 +10,14 @@
   <h1>Cloud Computing - Assessment 1</h1>
 
   <nav>
-    <a href="/index">index</a>
+    <a href="{{ url_for('index') }}">index</a>
     {% if user == None %}
-    <a href="/register">register</a>
-    <a href="/login">login</a>
+    <a href="{{ url_for('register') }}">register</a>
+    <a href="{{ url_for('login') }}">login</a>
     {% else %}
-    <a href="/forum">forum</a>
-    <a href="/userpage">userpage</a>
-    <a href="/logout">logout</a>
+    <a href="{{ url_for('forum') }}">forum</a>
+    <a href="{{ url_for('userpage') }}">userpage</a>
+    <a href="{{ url_for('logout') }}">logout</a>
     {% endif %}
   </nav>
 
