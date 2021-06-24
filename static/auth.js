@@ -16,6 +16,10 @@ window.addEventListener('load', function () {
         // Show signout/login info
         document.getElementById('sign-out').hidden = false;
         document.getElementById('login-info').hidden = false;
+
+        // Hide create 
+        document.getElementById('create').hidden = true;
+        document.getElementById('create-new').hidden = true;
     };
     
     SignOut = function(){
@@ -26,6 +30,7 @@ window.addEventListener('load', function () {
 
         // Show create
         document.getElementById('create').hidden = false;
+        document.getElementById('create-new').hidden = false;
     };
 
     CreateNew = function(){
@@ -41,5 +46,6 @@ window.addEventListener('load', function () {
 
         // Hide create 
         document.getElementById('create').hidden = true;
+        document.getElementById('create-new').hidden = true;
     };
   });

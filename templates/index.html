@@ -3,14 +3,14 @@
 <html>
 <head>
   <title>Cloud Computing - Assessment 1</title>
-  <!--<script src="{{ url_for('static', filename='script.js') }}"></script>
-  <link type="text/css" rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">-->
+  <script src="{{ url_for('static', filename='auth.js') }}" type="text/javascript"></script>
 </head>
 <body>
 
   <h1>Cloud Computing - Assessment 1</h1>
 
   <button id="sign-out" hidden=true>Sign Out</button>
+  <button id="sign-in">Sign In</button>
 
   <div id="login-info" hidden=true>
     <h2>Login info:</h2>
@@ -28,7 +28,7 @@
     {% endif %}
   </div>
 
-  <div id="create-new" hidden=false>
+  <div id="create-new">
     User name: <input type="text" id="user">
     User email: <input type="text" id="email">
     <button id="create">Create</button>
