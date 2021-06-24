@@ -2,6 +2,8 @@ import datetime
 
 
 from flask import Flask, request, url_for, redirect, render_template, flash
+from flask_login import login_user, logout_user, login_required, current_user, LoginManager
+
 from google.cloud import datastore
 from auth.auth import Auth
 from forum.forum import Forum
@@ -9,6 +11,8 @@ from forms.login import LoginForm
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'very secure'
+
+login = LoginManager(app)
 
 datastore_client = datastore.Client()
 
@@ -25,23 +29,34 @@ def index():
     return render_template(
         'index.html', loggedin=auth.loggedin, user=auth.user)
 
-
+#
+#
+#
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     form = LoginForm()
 
     if form.validate_on_submit():
 
-        return redirect('/index')
+        # Form is valid, ok now check that the user exists
+        # and the password matches that record.
+
+        return redirect(url_for('index'))
 
     return render_template('login.html', title='Sign In', form=form)   
 
+#
+#
+#
 @app.route('/logout')
 def logout():
     auth.logout()
 
     return redirect(url_for('index'))
 
+#
+#
+#
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
@@ -53,12 +68,18 @@ def register():
         return render_template(
             'register.html', loggedin=auth.loggedin, user=auth.user)
 
+#
+#
+#
 @app.route('/userpage')
 def userpage():
     # check if user logged in
     return render_template(
         'userpage.html', loggedin=auth.loggedin, user=auth.user)
 
+#
+#
+#
 @app.route('/forum')
 def forum():
     # check if user logged in
