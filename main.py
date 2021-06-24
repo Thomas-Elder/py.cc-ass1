@@ -1,6 +1,6 @@
 import datetime
 
-from flask import Flask, render_template
+from flask import Flask, request, url_for, redirect, render_template
 from google.cloud import datastore
 
 app = Flask(__name__)
@@ -24,16 +24,52 @@ def fetch_times(limit):
 
     return times
 
+#
+# Routes
+#
 @app.route('/')
-def root():
-    # Store the current access time in Datastore.
-    store_time(datetime.datetime.now())
-
-    # Fetch the most recent 10 access times from Datastore.
-    times = fetch_times(10)
+def index():
 
     return render_template(
-        'index.html', times=times)
+        'index.html')
 
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    
+    if request.method == 'POST':
+        # check user input against db
+        # set logged in true
+        # redirect to userpage
+        return redirect(url_for('userpage'))
+    else:
+        # display log in page
+        return render_template(
+            'login.html')      
+
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    if request.method == 'POST':
+        # set logged in true
+        # redirect to userpage
+        return redirect(url_for('userpage'))
+    else:
+        return render_template(
+            'register.html')
+
+@app.route('/userpage')
+def userpage():
+    # check if user logged in
+    return render_template(
+        'userpage.html')
+
+@app.route('/forum')
+def forum():
+    # check if user logged in
+    return render_template(
+        'forum.html')
+
+#
+# For local hosting
+#
 if __name__ == '__main__':
     app.run(host='127.0.0.1', port=8080, debug=True)
