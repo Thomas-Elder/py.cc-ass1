@@ -9,29 +9,10 @@
 
   <h1>Cloud Computing - Assessment 1</h1>
 
-  <button id="sign-out" hidden=true>Sign Out</button>
-  <button id="sign-in">Sign In</button>
+  <a href="/register">register</a>
+  <a href="/login">login</a>
+  <a href="/forum">forum</a>
+  <a href="/userpage">userpage</a>
 
-  <div id="login-info" hidden=true>
-    <h2>Login info:</h2>
-    {% if user_data %}
-      <dl>
-        <dt>Name</dt><dd>{{ user_data['name'] }}</dd>
-        <dt>Email</dt><dd>{{ user_data['email'] }}</dd>
-        <dt>Last 10 visits</dt><dd>
-          {% for time in times %}
-            <p>{{ time['timestamp'] }}</p>
-          {% endfor %} </dd>
-      </dl>
-    {% elif error_message %}
-      <p>Error: {{ error_message }}</p>
-    {% endif %}
-  </div>
-
-  <div id="create-new">
-    User name: <input type="text" id="user">
-    User email: <input type="text" id="email">
-    <button id="create">Create</button>
-  </div>
 </body>
 </html>
