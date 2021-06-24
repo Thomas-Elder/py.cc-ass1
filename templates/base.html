@@ -8,10 +8,12 @@
 <body>
 
   <h1>Cloud Computing - Assessment 1</h1>
-
+  {% if current_user.is_authenticated %}
+  {{current_user.username, current_user.id}}
+  {% endif %}
   <nav>
     <a href="{{ url_for('index') }}">index</a>
-    {% if user == None %}
+    {% if not current_user.is_authenticated %}
     <a href="{{ url_for('register') }}">register</a>
     <a href="{{ url_for('login') }}">login</a>
     {% else %}
