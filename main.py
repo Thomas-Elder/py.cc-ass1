@@ -1,37 +1,28 @@
 import datetime
 
+
 from flask import Flask, request, url_for, redirect, render_template
 from google.cloud import datastore
+from auth.auth import Auth
+from forum.forum import Forum
 
 app = Flask(__name__)
 
 datastore_client = datastore.Client()
 
-def store_time(dt):
-    entity = datastore.Entity(key=datastore_client.key('visit'))
-    entity.update({
-        'timestamp': dt
-    })
-
-    datastore_client.put(entity)
-
-
-def fetch_times(limit):
-    query = datastore_client.query(kind='visit')
-    query.order = ['-timestamp']
-
-    times = query.fetch(limit=limit)
-
-    return times
+auth = Auth(datastore_client)
+forum = Forum(datastore_client)
 
 #
 # Routes
 #
 @app.route('/')
+@app.route('/index')
 def index():
 
     return render_template(
-        'index.html')
+        'index.html', loggedin=auth.loggedin, user=auth.user)
+
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -39,34 +30,42 @@ def login():
     if request.method == 'POST':
         # check user input against db
         # set logged in true
+        auth.login()
         # redirect to userpage
         return redirect(url_for('userpage'))
     else:
         # display log in page
         return render_template(
-            'login.html')      
+            'login.html', loggedin=auth.loggedin, user=auth.user)      
+
+@app.route('/logout')
+def logout():
+    auth.logout()
+
+    return redirect(url_for('index'))
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
         # set logged in true
+        auth.login()
         # redirect to userpage
         return redirect(url_for('userpage'))
     else:
         return render_template(
-            'register.html')
+            'register.html', loggedin=auth.loggedin, user=auth.user)
 
 @app.route('/userpage')
 def userpage():
     # check if user logged in
     return render_template(
-        'userpage.html')
+        'userpage.html', loggedin=auth.loggedin, user=auth.user)
 
 @app.route('/forum')
 def forum():
     # check if user logged in
     return render_template(
-        'forum.html')
+        'forum.html', loggedin=auth.loggedin, user=auth.user)
 
 #
 # For local hosting
