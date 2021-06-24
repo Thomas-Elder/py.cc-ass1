@@ -1,0 +1,37 @@
+<!doctype html>
+
+<html>
+<head>
+  <title>Cloud Computing - Assessment 1</title>
+  <!--<script src="{{ url_for('static', filename='script.js') }}"></script>
+  <link type="text/css" rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">-->
+</head>
+<body>
+
+  <h1>Cloud Computing - Assessment 1</h1>
+
+  <button id="sign-out" hidden=true>Sign Out</button>
+
+  <div id="login-info" hidden=true>
+    <h2>Login info:</h2>
+    {% if user_data %}
+      <dl>
+        <dt>Name</dt><dd>{{ user_data['name'] }}</dd>
+        <dt>Email</dt><dd>{{ user_data['email'] }}</dd>
+        <dt>Last 10 visits</dt><dd>
+          {% for time in times %}
+            <p>{{ time['timestamp'] }}</p>
+          {% endfor %} </dd>
+      </dl>
+    {% elif error_message %}
+      <p>Error: {{ error_message }}</p>
+    {% endif %}
+  </div>
+
+  <div id="create-new" hidden=false>
+    User name: <input type="text" id="user">
+    User email: <input type="text" id="email">
+    <button id="create">Create</button>
+  </div>
+</body>
+</html>

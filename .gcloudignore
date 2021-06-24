@@ -1,0 +1,8 @@
+# General:
+.gcloudignore
+.git 
+.gitignore
+
+# Python:
+__pycache__/
+env/
