@@ -1,12 +1,14 @@
 import datetime
 
 
-from flask import Flask, request, url_for, redirect, render_template
+from flask import Flask, request, url_for, redirect, render_template, flash
 from google.cloud import datastore
 from auth.auth import Auth
 from forum.forum import Forum
+from forms.login import LoginForm
 
 app = Flask(__name__)
+app.config['SECRET_KEY'] = 'very secure'
 
 datastore_client = datastore.Client()
 
@@ -26,17 +28,13 @@ def index():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    
-    if request.method == 'POST':
-        # check user input against db
-        # set logged in true
-        auth.login()
-        # redirect to userpage
-        return redirect(url_for('userpage'))
-    else:
-        # display log in page
-        return render_template(
-            'login.html', loggedin=auth.loggedin, user=auth.user)      
+    form = LoginForm()
+
+    if form.validate_on_submit():
+
+        return redirect('/index')
+
+    return render_template('login.html', title='Sign In', form=form)   
 
 @app.route('/logout')
 def logout():
