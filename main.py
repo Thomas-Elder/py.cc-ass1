@@ -37,9 +37,6 @@ def index():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
 
-    if current_user.is_authenticated:
-        return redirect(url_for('index'))
-
     form = LoginForm()
 
     if request.method == 'POST':
@@ -48,7 +45,7 @@ def login():
 
             if db.checkpassword(form.id.data, form.password.data):
                 login_user(db.getuser(form.id.data))
-                return redirect(url_for('index'))
+                return redirect(url_for('forum'))
 
             else:
                 return redirect(url_for('loginerror'))
@@ -70,7 +67,7 @@ def loginerror():
 @login_required
 def logout():
     logout_user()
-    return redirect(url_for('index'))
+    return redirect(url_for('login'))
 
 #
 #
@@ -83,9 +80,11 @@ def register():
     if request.method == 'POST':
 
         if form.validate_on_submit():
-            db.setuser(form.id.data, form.name.data, form.password.data)
-            login_user(db.getuser(form.id.data))
-            return redirect(url_for('userpage'))
+
+            db.setuser(form.id.data, form.username.data, form.password.data)
+            return redirect(url_for('login'))
+        else:
+            return render_template('register.html', form=form)
 
     else:
         return render_template('register.html', form=form)
