@@ -4,10 +4,8 @@ import datetime
 from flask import Flask, request, url_for, redirect, render_template, flash
 from flask_login import login_user, logout_user, login_required, current_user, LoginManager
 
-from google.cloud import datastore
 from db.db import DB
-from db.auth import Auth
-from db.forum import Forum
+
 from forms.login import LoginForm
 from forms.register import RegisterForm
 from forms.post import PostForm
@@ -18,13 +16,11 @@ app.config['SECRET_KEY'] = 'very secure'
 login = LoginManager(app)
 login.login_view = 'login'
 
-datastore_client = datastore.Client()
-
-db = DB(datastore_client)
+db = DB()
 
 @login.user_loader
 def load_user(id):
-    return db.getuser(int(id))
+    return db.getuser(id)
 
 #
 # Routes
@@ -50,8 +46,8 @@ def login():
 
         if form.validate_on_submit():
 
-            if db.checkpassword(int(form.id.data), form.password.data):
-                login_user(db.getuser(int(form.id.data)))
+            if db.checkpassword(form.id.data, form.password.data):
+                login_user(db.getuser(form.id.data))
                 return redirect(url_for('index'))
 
             else:
@@ -87,8 +83,8 @@ def register():
     if request.method == 'POST':
 
         if form.validate_on_submit():
-            db.setuser(int(form.id.data), form.name.data, form.password.data)
-            login_user(db.getuser(int(form.id.data)))
+            db.setuser(form.id.data, form.name.data, form.password.data)
+            login_user(db.getuser(form.id.data))
             return redirect(url_for('userpage'))
 
     else:
