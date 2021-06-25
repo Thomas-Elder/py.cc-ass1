@@ -46,6 +46,7 @@ class DB:
     #
     #
     def getusers(self):
+
         query = self.client.query(kind='users')
         users = query.fetch()
 
@@ -65,12 +66,50 @@ class DB:
         else:
             user = User(result['id'], result['username'], result['password'])
             return user
+    
+    #   
+    #
+    #
+    def usernameexists(self, username):
+
+        query = self.client.query(kind="users")
+        query.add_filter('username', '=', username)
+        result = query.fetch()
+
+        if result == None:
+            return False
+        else:
+            return True
+
+    #   
+    #
+    #
+    def idexists(self, id):
+
+        key = self.client.key('users', id)
+        result = self.client.get(key)
+
+        if result == None:
+            return False
+        else:
+            return True
 
     #
     #
     #
     def setuser(self, id, username, password):
-        pass
+
+        key = self.client.key('users', id)
+        user = datastore.Entity(key=key)
+        user.update(
+            {
+                'id': id, 
+                'username': username, 
+                'password': password
+            }
+            )
+
+        self.client.put(user)
 
     #
     #
@@ -116,7 +155,8 @@ class DB:
     #
     #
     def getposts(self):
+
         query = self.client.query(kind='posts')
-        posts = query.fetch()
+        posts = query.fetch(limit=10)
 
         return posts
