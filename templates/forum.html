@@ -30,4 +30,18 @@
 
 <h3>Forum Area</h3>
 
+{% for post in posts %}
+    <p>
+        posted on {{ post['datetime'].strftime("%a %d %b %Y") }} at {{ post['datetime'].strftime("%X") }}
+    </p>
+    <p>
+        by {{ post['user'] }}
+    </p>
+    <p>
+        subject {{ post['subject'] }}
+    </p>
+    <p>
+        message {{ post['message'] }}
+    </p>
+{% endfor %}
 {% endblock %}

@@ -106,13 +106,17 @@ def userpage():
 @login_required
 def forum():
     form = PostForm()
-
+    posts = db.getposts()
     if request.method == 'POST':
         if form.validate_on_submit():
             db.addpost(form.subject.data, form.message.data, current_user)
             return redirect(url_for('forum'))
     else:
-        return render_template('forum.html', form=form, current_user=current_user)
+        return render_template(
+            'forum.html', 
+            form=form, 
+            current_user=current_user,
+            posts=posts)
 
 #
 # For local hosting

@@ -1,6 +1,7 @@
 
 from google.cloud import datastore
-from pyasn1.type.univ import Null
+
+from datetime import datetime
 
 from .models.post import Post
 from .models.user import User
@@ -27,6 +28,19 @@ class DB:
             )
 
         self.client.put(user)
+
+        key = self.client.key('posts', '1')
+        post = datastore.Entity(key=key)
+        post.update(
+            {
+                'subject':'test post',
+                'message':'test message',
+                'user':'1',
+                'datetime': datetime.now()
+            }
+        )
+
+        self.client.put(post)
 
     #
     #
@@ -56,17 +70,14 @@ class DB:
     #
     #
     def setuser(self, id, username, password):
-
-        self.users[id] = User(id, username, password)
+        pass
 
     #
     #
     #
     def updateuser(self, id, username, password):
+        pass
 
-        self.users[id].username = username
-        self.users[id].password = password
-    
     #
     #
     #
@@ -75,7 +86,7 @@ class DB:
         key = self.client.key('users', id)
         result = self.client.get(key)
 
-        if result != Null and result['password'] == password:
+        if result != None and result['password'] == password:
 
             return User(result['id'], result['username'], result['password'])
 
@@ -86,7 +97,26 @@ class DB:
     #
     #
     def addpost(self, subject, message, user):
-        self.posts.append(Post(subject, message, user))
 
+        key = self.client.key('posts')
+        post = datastore.Entity(key=key)
+        post.update(
+            {
+                'subject': subject,
+                'message': message,
+                'user': user.id,
+                'datetime': datetime.now()
+            }
+        )
+
+        self.client.put(post)      
+
+
+    #
+    #
+    #
     def getposts(self):
-        return self.posts
+        query = self.client.query(kind='posts')
+        posts = query.fetch()
+
+        return posts
