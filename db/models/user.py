@@ -6,9 +6,3 @@ class User(UserMixin):
         self.id = id
         self.username = username
         self.password = password
-
-    def setpassword(self):
-        pass
-
-    def checkpassword(self):
-        pass

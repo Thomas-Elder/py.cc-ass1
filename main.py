@@ -111,11 +111,15 @@ def forum():
             db.addpost(form.subject.data, form.message.data, current_user)
             return redirect(url_for('forum'))
     else:
+
+        img = db.getimg(current_user.id)
+
         return render_template(
             'forum.html', 
             form=form, 
             current_user=current_user,
-            posts=posts)
+            posts=posts,
+            img=img)
 
 #
 # For local hosting
