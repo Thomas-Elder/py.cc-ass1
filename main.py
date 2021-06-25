@@ -10,6 +10,7 @@ from db.auth import Auth
 from db.forum import Forum
 from forms.login import LoginForm
 from forms.register import RegisterForm
+from forms.post import PostForm
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'very secure'
@@ -19,8 +20,6 @@ login.login_view = 'login'
 
 datastore_client = datastore.Client()
 
-auth = Auth(datastore_client)
-forum = Forum(datastore_client)
 db = DB(datastore_client)
 
 @login.user_loader
@@ -107,11 +106,17 @@ def userpage():
 #
 #
 #
-@app.route('/forum')
+@app.route('/forum', methods=['GET', 'POST'])
 @login_required
 def forum():
-    # check if user logged in
-    return render_template('forum.html', current_user=current_user)
+    form = PostForm()
+
+    if request.method == 'POST':
+        if form.validate_on_submit():
+            db.addpost(form.subject.data, form.message.data, current_user)
+            return redirect(url_for('forum'))
+    else:
+        return render_template('forum.html', form=form, current_user=current_user)
 
 #
 # For local hosting

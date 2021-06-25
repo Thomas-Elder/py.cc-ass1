@@ -1,5 +1,33 @@
 {% extends "base.html" %}
 
 {% block content %}
-Forum stuff
+
+<h3>User Area</h3>
+
+<h3>New Post Area</h3>
+
+<form action="" method="post" novalidate>
+    {{ form.hidden_tag() }}
+    <p>
+        {{ form.subject.label }}<br>
+        {{ form.subject(size=32) }}<br>
+        {% for error in form.subject.errors %}
+        <span style="color: red;">[{{ error }}]</span>
+        {% endfor %}
+    </p>
+    <p>
+        {{ form.message.label }}<br>
+        {{ form.message(size=32) }}<br>
+        {% for error in form.message.errors %}
+        <span style="color: red;">[{{ error }}]</span>
+        {% endfor %}
+    </p>
+    <p>
+        image uploading?
+    </p>
+    <p>{{ form.submit() }}</p>
+</form>
+
+<h3>Forum Area</h3>
+
 {% endblock %}
