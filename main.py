@@ -9,6 +9,7 @@ from db.db import DB
 from db.auth import Auth
 from db.forum import Forum
 from forms.login import LoginForm
+from forms.register import RegisterForm
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'very secure'
@@ -33,8 +34,7 @@ def load_user(id):
 @app.route('/index')
 def index():
 
-    return render_template(
-        'index.html', current_user=current_user)
+    return render_template('index.html', current_user=current_user)
 
 #
 #
@@ -47,18 +47,20 @@ def login():
 
     form = LoginForm()
 
-    if form.validate_on_submit():
+    if request.method == 'POST':
 
-        if db.checkpassword(int(form.id.data), form.password.data):
+        if form.validate_on_submit():
 
-            login_user(db.getuser(int(form.id.data)))
+            if db.checkpassword(int(form.id.data), form.password.data):
+                login_user(db.getuser(int(form.id.data)))
+                return redirect(url_for('index'))
 
-            return redirect(url_for('index'))
+            else:
+                return redirect(url_for('loginerror'))
 
-        else:
-            return redirect(url_for('loginerror'))
+    else:
 
-    return render_template('login.html', form=form)   
+        return render_template('login.html', form=form)   
 
 #
 #
@@ -80,14 +82,18 @@ def logout():
 #
 @app.route('/register', methods=['GET', 'POST'])
 def register():
+
+    form = RegisterForm()
+
     if request.method == 'POST':
-        # set logged in true
-        auth.login()
-        # redirect to userpage
-        return redirect(url_for('userpage'))
+
+        if form.validate_on_submit():
+            db.setuser(int(form.id.data), form.name.data, form.password.data)
+            login_user(db.getuser(int(form.id.data)))
+            return redirect(url_for('userpage'))
+
     else:
-        return render_template(
-            'register.html')
+        return render_template('register.html', form=form)
 
 #
 #
@@ -96,8 +102,7 @@ def register():
 @login_required
 def userpage():
     # check if user logged in
-    return render_template(
-        'userpage.html', current_user=current_user)
+    return render_template('userpage.html', current_user=current_user)
 
 #
 #
@@ -106,8 +111,7 @@ def userpage():
 @login_required
 def forum():
     # check if user logged in
-    return render_template(
-        'forum.html', current_user=current_user)
+    return render_template('forum.html', current_user=current_user)
 
 #
 # For local hosting
