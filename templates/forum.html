@@ -26,7 +26,11 @@
         {% endfor %}
     </p>
     <p>
-        image uploading?
+        {{ form.image.label }}<br>
+        {{ form.image(size=32) }}<br>
+        {% for error in form.image.errors %}
+        <span style="color: red;">[{{ error }}]</span>
+        {% endfor %}
     </p>
     <p>{{ form.submit() }}</p>
 </form>
@@ -35,16 +39,16 @@
 
 {% for post in posts %}
     <p>
-        posted on {{ post['datetime'].strftime("%a %d %b %Y") }} at {{ post['datetime'].strftime("%X") }}
+        posted on {{ post.datetime }}
     </p>
     <p>
-        by {{ post['user'] }}
+        by {{ post.user.username }}
     </p>
     <p>
-        subject {{ post['subject'] }}
+        subject {{ post.subject }}
     </p>
     <p>
-        message {{ post['message'] }}
+        message {{ post.message }}
     </p>
 {% endfor %}
 {% endblock %}
