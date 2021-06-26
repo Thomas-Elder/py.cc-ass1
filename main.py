@@ -43,23 +43,15 @@ def login():
 
         if form.validate_on_submit():
 
-            if db.checkpassword(form.id.data, form.password.data):
-                login_user(db.getuser(form.id.data))
-                return redirect(url_for('forum'))
+            login_user(db.getuser(form.id.data))
+            return redirect(url_for('forum'))
 
-            else:
-                return redirect(url_for('loginerror'))
+        else:
+            return render_template('login.html', form=form)   
 
     else:
-
         return render_template('login.html', form=form)   
 
-#
-#
-#
-@app.route('/loginerror', methods=['GET'])
-def loginerror():
-    return render_template('loginerror.html')
 #
 #
 #
@@ -83,6 +75,7 @@ def register():
 
             db.setuser(form.id.data, form.username.data, form.password.data)
             return redirect(url_for('login'))
+
         else:
             return render_template('register.html', form=form)
 
@@ -108,7 +101,7 @@ def forum():
     posts = db.getposts()
     if request.method == 'POST':
         if form.validate_on_submit():
-            db.addpost(form.subject.data, form.message.data, current_user)
+            db.addpost(form.subject.data, form.message.data, current_user, form.image.data)
             return redirect(url_for('forum'))
     else:
 
