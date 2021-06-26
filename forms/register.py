@@ -11,21 +11,16 @@ class RegisterForm(FlaskForm):
 
     def validate(self):
 
-        print('validating... ')
-
         if not FlaskForm.validate(self):
-            print('default validation failed... ')
             return False
         else:
             db = DB()
 
             if db.idexists(self.id.data):
-                print('id exists')
                 self.id.errors.append('The ID already exists')
                 return False
 
             if db.usernameexists(self.username.data):
-                print('username exists')
                 self.username.errors.append('The username already exists')
                 return False
 
