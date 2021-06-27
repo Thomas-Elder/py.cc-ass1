@@ -19,42 +19,8 @@ class DB:
 
         self.dataclient = datastore.Client()
         self.storeclient = storage.Client()
-        self.bucket = self.storeclient.get_bucket('cc-ass1-317800.appspot.com')
-        id = 's33750870'
-        file = 'img/0.jpg'
 
-        img = Image.open(file)
-        new = img.resize((120, 120), Image.ANTIALIAS)
-        new.save(file)
-
-        blob = self.bucket.blob(id)
-        blob.upload_from_filename(file)
-
-        key = self.dataclient.key('users', 's33750870')
-        user = datastore.Entity(key=key)
-        user.update(
-            {
-                'id': 's33750870', 
-                'username':'Tom Elder0', 
-                'password':'012345'
-            }
-            )
-
-        self.dataclient.put(user)
-
-        key = self.dataclient.key('posts', '1')
-        post = datastore.Entity(key=key)
-        post.update(
-            {
-                'id':'1',
-                'subject':'test post',
-                'message':'test message',
-                'user':'1',
-                'datetime': datetime.now()
-            }
-        )
-
-        self.dataclient.put(post)
+        # call initialusers (or maybe we call this soemthing else... )
 
     #
     #
@@ -180,24 +146,38 @@ class DB:
 
         self.dataclient.put(post)      
 
-
     #
     #
     #
-    def getposts(self):
-
-        query = self.dataclient.query(kind='posts')
-        posts = query.fetch(limit=10)
-
+    def getposts(self, id=None):
         result = []
 
-        for post in posts:
-            result.append(Post(
-                post['subject'],
-                post['message'],
-                self.getuser(post['user']),
-                id=post['id'],
-                datetime=post['datetime']
-            ))
+        if id == None:
+            query = self.dataclient.query(kind='posts')
+            posts = query.fetch(limit=10)
+
+            for post in posts:
+                result.append(Post(
+                    post['subject'],
+                    post['message'],
+                    self.getuser(post['user']),
+                    id=post['id'],
+                    datetime=post['datetime']
+                ))
+
+        else:
+
+            query = self.dataclient.query(kind='posts')
+            query.add_filter('user', '=', id)
+            posts = query.fetch(limit=10)
+
+            for post in posts:
+                result.append(Post(
+                    post['subject'],
+                    post['message'],
+                    self.getuser(post['user']),
+                    id=post['id'],
+                    datetime=post['datetime']
+                ))
 
         return result
