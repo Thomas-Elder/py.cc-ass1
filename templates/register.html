@@ -4,29 +4,38 @@
 
 <h3>Register</h3>
 
-<form action="" method="post" novalidate>
+<form method="POST" enctype="multipart/form-data">
     {{ form.hidden_tag() }}
-    <p>
+    <div>
         {{ form.id.label }}<br>
         {{ form.id(size=32) }}<br>
         {% for error in form.id.errors %}
         <span style="color: red;">[{{ error }}]</span>
         {% endfor %}
-    </p>
-    <p>
+    </div>
+    <div>
         {{ form.username.label }}<br>
         {{ form.username(size=32) }}<br>
         {% for error in form.username.errors %}
         <span style="color: red;">[{{ error }}]</span>
         {% endfor %}
-    </p>
-    <p>
+    </div>
+    <div>
         {{ form.password.label }}<br>
         {{ form.password(size=32) }}<br>
         {% for error in form.password.errors %}
         <span style="color: red;">[{{ error }}]</span>
         {% endfor %}
-    </p>
-    <p>{{ form.submit() }}</p>
+    </div>
+    <div>
+        {{ form.avatar.label }}<br>
+        {{ form.avatar(size=32) }}<br>
+        {% for error in form.avatar.errors %}
+        <span style="color: red;">[{{ error }}]</span>
+        {% endfor %}
+    </div>
+    <div>
+        {{ form.submit() }}
+    </div>
 </form>
 {% endblock %}
