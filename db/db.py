@@ -55,7 +55,7 @@ class DB:
         query = self.dataclient.query(kind="users")
         query.add_filter('username', '=', username)
         result = query.fetch()
-        print(result)
+
         if result.num_results == 0:
             return False
         else:
@@ -77,7 +77,7 @@ class DB:
     #
     #
     #
-    def setuser(self, id, username, password):
+    def setuser(self, id, username, password, filename):
 
         key = self.dataclient.key('users', id)
         user = datastore.Entity(key=key)
@@ -90,6 +90,7 @@ class DB:
             )
 
         self.dataclient.put(user)
+        self.setimg(id, filename)
 
     #
     #
@@ -99,6 +100,19 @@ class DB:
         blob = self.bucket.blob(id)
 
         return blob.public_url
+
+    #
+    #
+    #
+    def setimg(self, id, filename):
+        self.bucket = storage.Client().get_bucket('cc-ass1-317800.appspot.com')
+        blob = self.bucket.blob(id)
+
+        existing = Image.open(filename)
+        new = existing.resize((120, 120), Image.ANTIALIAS)
+        new.save(filename)
+
+        blob.upload_from_filename(filename)
 
     #
     #
@@ -124,7 +138,7 @@ class DB:
     #
     #
     #
-    def addpost(self, subject, message, user, image):
+    def addpost(self, subject, message, user, filename):
 
         date = datetime.now()
         id = date.strftime('%d%m%Y%H%M%S%f')
@@ -141,9 +155,7 @@ class DB:
             }
         )
 
-        #blob = self.bucket.blob(id)
-        #blob.upload_from_filename(image)
-
+        self.setimg(id, filename)
         self.dataclient.put(post)      
 
     #
