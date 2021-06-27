@@ -4,8 +4,18 @@
 
 <h3>User Area</h3>
 
-    <a href="{{url_for('userpage')}}">{{ current_user.username }}</a>
-    <img src="{{ img }}">
+    <div>
+        <a href="{{url_for('userpage')}}">{{ current_user.username }}</a>
+        <img src="{{ img }}">
+    </div>
+
+    {% for post in userposts %}
+    <div>
+        <div>subject: {{ post.subject }}</div>
+        <div>message: {{ post.message }}]</div>
+        <div>date: {{ post.datetime.ctime() }}</div>
+    </div>
+    {% endfor %}
     
 <h3>New Post Area</h3>
 
@@ -38,17 +48,19 @@
 <h3>Forum Area</h3>
 
 {% for post in posts %}
-    <p>
-        posted on {{ post.datetime }}
-    </p>
-    <p>
+<div>
+    <div>
+        posted on {{ post.datetime.ctime() }}
+    </div>
+    <div>
         by {{ post.user.username }}
-    </p>
-    <p>
+    </div>
+    <div>
         subject {{ post.subject }}
-    </p>
-    <p>
+    </div>
+    <div>
         message {{ post.message }}
-    </p>
+    </div>
+</div>
 {% endfor %}
 {% endblock %}
