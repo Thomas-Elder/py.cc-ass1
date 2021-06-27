@@ -1,5 +1,16 @@
 {% extends "base.html" %}
 
 {% block content %}
-Userpage stuff
+<div>
+    <div>{{ current_user.username }}</div>
+    <img src="{{ img }}">
+</div>
+
+{% for post in userposts %}
+<div>
+    <div>subject: {{ post.subject }}</div>
+    <div>message: {{ post.message }}]</div>
+    <div>date: {{ post.datetime.ctime() }}</div>
+</div>
+{% endfor %}
 {% endblock %}

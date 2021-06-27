@@ -88,8 +88,12 @@ def register():
 @app.route('/userpage')
 @login_required
 def userpage():
-    # check if user logged in
-    return render_template('userpage.html', current_user=current_user)
+    userposts = db.getposts(current_user.id)
+    return render_template(
+        'userpage.html', 
+        userposts=userposts,
+        current_user=current_user
+        )
 
 #
 #
@@ -115,7 +119,8 @@ def forum():
             current_user=current_user,
             posts=posts,
             userposts=userposts,
-            img=img)
+            img=img
+            )
 
 #
 # For local hosting
