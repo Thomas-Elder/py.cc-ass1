@@ -98,7 +98,7 @@ def userpage():
 @login_required
 def forum():
     form = PostForm()
-    posts = db.getposts()
+    
     if request.method == 'POST':
         if form.validate_on_submit():
             db.addpost(form.subject.data, form.message.data, current_user, form.image.data)
@@ -106,12 +106,15 @@ def forum():
     else:
 
         img = db.getimg(current_user.id)
-
+        posts = db.getposts()
+        userposts = db.getposts(current_user.id)
+        print(userposts)
         return render_template(
             'forum.html', 
             form=form, 
             current_user=current_user,
             posts=posts,
+            userposts=userposts,
             img=img)
 
 #
