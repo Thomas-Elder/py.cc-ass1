@@ -24,8 +24,8 @@ class DB:
         file = 'img/0.jpg'
 
         img = Image.open(file)
-        img.resize((120, 120), Image.ANTIALIAS)
-        img.save(file)
+        new = img.resize((120, 120), Image.ANTIALIAS)
+        new.save(file)
 
         blob = self.bucket.blob(id)
         blob.upload_from_filename(file)
@@ -55,23 +55,6 @@ class DB:
         )
 
         self.dataclient.put(post)
-
-    #
-    # Clean! 
-    #
-    def clean(self):
-        # ok we need to delete all posts 
-        # remove all users
-        # delete all blobs in the bucket
-        pass
-
-    #
-    # Init
-    #
-    def init(self):
-        # create 10 user accounts
-        # upload images
-        pass
 
     #
     #
