@@ -94,6 +94,25 @@ class DB:
     #
     #
     #
+    def setpassword(self, id, newpassword):
+        key = self.dataclient.key('users', id)
+        user = self.dataclient.get(key)
+
+        username = user['username']
+
+        user.update(
+            {
+                'id': id,
+                'username': username,
+                'password': newpassword
+            }
+            )
+
+        self.dataclient.put(user)
+
+    #
+    #
+    #
     def getimg(self, id):
         self.bucket = storage.Client().get_bucket('cc-ass1-317800.appspot.com')
         blob = self.bucket.blob(id)
