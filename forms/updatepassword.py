@@ -4,6 +4,7 @@ from wtforms.validators import DataRequired
 from db.db import DB
 
 class UpdatePasswordForm(FlaskForm):
+
     id = StringField('ID', validators=[DataRequired()])
     oldpassword = PasswordField('Old Password', validators=[DataRequired()])
     newpassword = PasswordField('New Password', validators=[DataRequired()])
@@ -17,7 +18,8 @@ class UpdatePasswordForm(FlaskForm):
             db = DB()
 
             if db.checkpassword(self.id.data, self.oldpassword.data):
-                self.oldpassword.errors.append('The old password is incorrect')
                 return True
 
+            print('old password error')
+            self.oldpassword.errors.append('The old password is incorrect')
             return False
