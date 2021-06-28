@@ -148,7 +148,8 @@ def updatepost():
 
     if updatepostform.validate_on_submit():
         # push updated post to db
-
+        print(request.files['image'])
+        db.updatepost(updatepostform.id.data, updatepostform.subject.data, updatepostform.message.data, current_user, request.files['image'])
         # and redir to forum
         return redirect(url_for('forum'))
 
