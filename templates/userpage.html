@@ -11,6 +11,9 @@
     <div>subject: {{ post.subject }}</div>
     <div>message: {{ post.message }}]</div>
     <div>date: {{ post.datetime.ctime() }}</div>
+    <div>
+        <img src=" {{ post.img }} ">
+    </div>
 </div>
 {% endfor %}
 {% endblock %}
