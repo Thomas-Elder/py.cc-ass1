@@ -1,4 +1,6 @@
 
+import io
+import os
 from google.cloud import datastore
 from google.cloud import storage
 
@@ -10,8 +12,6 @@ from .models.user import User
 
 class DB:
 
-    users = {}
-    posts = []
     #
     #
     #
@@ -19,7 +19,6 @@ class DB:
 
         self.dataclient = datastore.Client()
         self.storeclient = storage.Client()
-
         # call initialusers (or maybe we call this soemthing else... )
 
     #
@@ -77,7 +76,7 @@ class DB:
     #
     #
     #
-    def setuser(self, id, username, password, filename):
+    def setuser(self, id, username, password, image):
 
         key = self.dataclient.key('users', id)
         user = datastore.Entity(key=key)
@@ -90,7 +89,7 @@ class DB:
             )
 
         self.dataclient.put(user)
-        self.setimg(id, filename)
+        self.setimg(id, image)
 
     #
     #
@@ -104,21 +103,29 @@ class DB:
     #
     #
     #
-    def setimg(self, id, filename):
+    def setimg(self, id, image):
+
+        # Get project bucket, and create/access blob for this id
         self.bucket = storage.Client().get_bucket('cc-ass1-317800.appspot.com')
         blob = self.bucket.blob(id)
 
-        existing = Image.open(filename)
-        new = existing.resize((120, 120), Image.ANTIALIAS)
-        new.save(filename)
+        # Resize image
+        imagetosave = Image.open(image)
+        imagetosave.thumbnail((120, 120)) # resize img to avatar size
+        imagetosave = imagetosave.convert('RGB') # convert to RGB
 
-        blob.upload_from_filename(filename)
+        # Convert to byte array for upload to gcs
+        img_byte_arr = io.BytesIO() 
+        imagetosave.save(img_byte_arr, format='JPEG') 
+        img_byte_arr = img_byte_arr.getvalue()
 
-    #
-    #
-    #
-    def updateuser(self, id, username, password):
-        pass
+        # Set blob.cache_control = 'public, max-age=0' as GC storage caches an image for an hour by default, 
+        # but you want the user to see the changed avatar immediately.
+        blob.cache_control = 'public, max-age=0' 
+
+        # Upload.
+        blob.upload_from_string(img_byte_arr, content_type='image/jpeg')
+
 
     #
     #
@@ -138,11 +145,13 @@ class DB:
     #
     #
     #
-    def addpost(self, subject, message, user, filename):
+    def addpost(self, subject, message, user, image):
 
+        #
         date = datetime.now()
         id = date.strftime('%d%m%Y%H%M%S%f')
 
+        #
         key = self.dataclient.key('posts')
         post = datastore.Entity(key=key)
         post.update(
@@ -155,8 +164,9 @@ class DB:
             }
         )
 
-        self.setimg(id, filename)
-        self.dataclient.put(post)      
+        #
+        self.setimg(id, image)
+        self.dataclient.put(post)
 
     #
     #
@@ -167,12 +177,16 @@ class DB:
         if id == None:
             query = self.dataclient.query(kind='posts')
             posts = query.fetch(limit=10)
+            self.bucket = storage.Client().get_bucket('cc-ass1-317800.appspot.com')
 
             for post in posts:
+                blob = self.bucket.blob(post['id'])
+
                 result.append(Post(
                     post['subject'],
                     post['message'],
                     self.getuser(post['user']),
+                    blob.public_url,
                     id=post['id'],
                     datetime=post['datetime']
                 ))
@@ -183,11 +197,17 @@ class DB:
             query.add_filter('user', '=', id)
             posts = query.fetch(limit=10)
 
+            self.bucket = storage.Client().get_bucket('cc-ass1-317800.appspot.com')
+            blob = self.bucket.blob(id)
+
             for post in posts:
+                blob = self.bucket.blob(post['id'])
+
                 result.append(Post(
                     post['subject'],
                     post['message'],
                     self.getuser(post['user']),
+                    blob.public_url,
                     id=post['id'],
                     datetime=post['datetime']
                 ))
