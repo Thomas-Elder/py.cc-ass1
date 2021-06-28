@@ -4,7 +4,7 @@ from forms.updatepassword import UpdatePasswordForm
 import os
 
 from flask import Flask, request, url_for, redirect, render_template, flash
-from flask_login import login_user, logout_user, login_required, current_user, LoginManager
+from flask_login import login_manager, login_user, logout_user, login_required, current_user, LoginManager
 from werkzeug.utils import secure_filename
 
 from db.db import DB
@@ -18,12 +18,12 @@ from forms.updatepost import UpdatePostForm
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'very secure'
 
-login = LoginManager(app)
-login.login_view = 'login'
+loginManager = LoginManager(app)
+loginManager.login_view = 'login'
 
 db = DB()
 
-@login.user_loader
+@loginManager.user_loader
 def load_user(id):
     return db.getuser(id)
 
@@ -115,6 +115,8 @@ def userpage():
 def updatepassword():
 
     updatepasswordform = UpdatePasswordForm(id=current_user.id)
+    updatepostform = UpdatePostForm()
+    userposts = db.getposts(current_user.id)
 
     if updatepasswordform.validate_on_submit():
 
@@ -125,7 +127,13 @@ def updatepassword():
         logout_user()
         return redirect(url_for('login'))
     
-    return redirect(url_for('userpage'))
+    return render_template(
+        'userpage.html', 
+        userposts=userposts,
+        current_user=current_user,
+        updatepasswordform=updatepasswordform,
+        updatepostform=updatepostform
+        )
 
 #
 #
@@ -134,7 +142,9 @@ def updatepassword():
 @login_required
 def updatepost():
 
+    updatepasswordform = UpdatePasswordForm(id=current_user.id)
     updatepostform = UpdatePostForm()
+    userposts = db.getposts(current_user.id)
 
     if updatepostform.validate_on_submit():
         # push updated post to db
@@ -142,8 +152,14 @@ def updatepost():
         # and redir to forum
         return redirect(url_for('forum'))
 
-    return redirect(url_for('userpage'))
-    
+    return render_template(
+        'userpage.html', 
+        userposts=userposts,
+        current_user=current_user,
+        updatepasswordform=updatepasswordform,
+        updatepostform=updatepostform
+        )
+
 #
 #
 #
