@@ -14,9 +14,9 @@ class LoginForm(FlaskForm):
             return False
         else:
             db = DB()
-
+            
             if db.checkpassword(self.id.data, self.password.data):
-                self.password.errors.append('ID or password is invalid')
                 return True
 
+            self.password.errors.append('ID or password is invalid')
             return False
