@@ -7,8 +7,25 @@
 </div>
 
 <h3>Password Edit Area</h3>
-<form>
-    
+<form action="{{ url_for('updatepassword') }}" method="post" novalidate>
+    {{ updatepasswordform.hidden_tag() }}
+    <div>
+        {{ updatepasswordform.oldpassword.label }}<br>
+        {{ updatepasswordform.oldpassword(size=32) }}<br>
+        {% for error in updatepasswordform.oldpassword.errors %}
+        <span style="color: red;">[{{ error }}]</span>
+        {% endfor %}
+    </div>
+    <div>
+        {{ updatepasswordform.newpassword.label }}<br>
+        {{ updatepasswordform.newpassword(size=32) }}<br>
+        {% for error in updatepasswordform.newpassword.errors %}
+        <span style="color: red;">[{{ error }}]</span>
+        {% endfor %}
+    </div>
+    <div>
+        {{ updatepasswordform.submit() }}
+    </div>
 </form>
 
 <h3>Post Edit Area</h3>
@@ -20,6 +37,34 @@
     <div>
         <img src=" {{ post.img }} ">
     </div>
+
+    <form action="{{ url_for('updatepost') }}"  method="post" novalidate>
+        {{ updatepostform.hidden_tag() }}
+        <div>
+            {{ updatepostform.subject.label }}<br>
+            {{ updatepostform.subject(size=32) }}<br>
+            {% for error in updatepostform.subject.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+        </div>
+        <div>
+            {{ updatepostform.message.label }}<br>
+            {{ updatepostform.message(size=32) }}<br>
+            {% for error in updatepostform.message.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+        </div>
+        <div>
+            {{ updatepostform.image.label }}<br>
+            {{ updatepostform.image(size=32) }}<br>
+            {% for error in updatepostform.image.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+        </div>
+        <div>
+            {{ updatepostform.submit() }}
+        </div>
+    </form>
 </div>
 {% endfor %}
 {% endblock %}
