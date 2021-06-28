@@ -8,18 +8,10 @@
         <a href="{{url_for('userpage')}}">{{ current_user.username }}</a>
         <img src="{{ img }}">
     </div>
-
-    {% for post in userposts %}
-    <div>
-        <div>subject: {{ post.subject }}</div>
-        <div>message: {{ post.message }}]</div>
-        <div>date: {{ post.datetime.ctime() }}</div>
-    </div>
-    {% endfor %}
     
 <h3>New Post Area</h3>
 
-<form action="" method="post" novalidate>
+<form method="POST" enctype="multipart/form-data">
     {{ form.hidden_tag() }}
     <p>
         {{ form.subject.label }}<br>
@@ -60,6 +52,9 @@
     </div>
     <div>
         message {{ post.message }}
+    </div>
+    <div>
+        <img src="{{ post.img }}">
     </div>
 </div>
 {% endfor %}
