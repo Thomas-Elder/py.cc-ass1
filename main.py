@@ -1,4 +1,6 @@
 import datetime
+from forms.updatepost import UpdatePostForm
+from forms.updatepassword import UpdatePasswordForm
 import os
 
 from flask import Flask, request, url_for, redirect, render_template, flash
@@ -10,6 +12,8 @@ from db.db import DB
 from forms.login import LoginForm
 from forms.register import RegisterForm
 from forms.post import PostForm
+from forms.updatepassword import UpdatePasswordForm
+from forms.updatepost import UpdatePostForm
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'very secure'
@@ -87,16 +91,59 @@ def register():
 #
 #
 #
-@app.route('/userpage')
+@app.route('/userpage', methods=['GET'])
 @login_required
 def userpage():
+
+    updatepasswordform = UpdatePasswordForm(id=current_user.id)
+    updatepostform = UpdatePostForm()
     userposts = db.getposts(current_user.id)
+
     return render_template(
         'userpage.html', 
         userposts=userposts,
-        current_user=current_user
+        current_user=current_user,
+        updatepasswordform=updatepasswordform,
+        updatepostform=updatepostform
         )
 
+#
+#
+#
+@app.route('/updatepassword', methods=['POST'])
+@login_required
+def updatepassword():
+
+    updatepasswordform = UpdatePasswordForm(id=current_user.id)
+
+    if updatepasswordform.validate_on_submit():
+
+        # push password to db
+        db.setpassword(current_user.id, updatepasswordform.newpassword.data)
+
+        # and redir to login, need to log the user out so they can log in with new creds
+        logout_user()
+        return redirect(url_for('login'))
+    
+    return redirect(url_for('userpage'))
+
+#
+#
+#
+@app.route('/updatepost', methods=['POST'])
+@login_required
+def updatepost():
+
+    updatepostform = UpdatePostForm()
+
+    if updatepostform.validate_on_submit():
+        # push updated post to db
+
+        # and redir to forum
+        return redirect(url_for('forum'))
+
+    return redirect(url_for('userpage'))
+    
 #
 #
 #
