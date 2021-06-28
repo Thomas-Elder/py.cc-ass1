@@ -190,6 +190,37 @@ class DB:
     #
     #
     #
+    def updatepost(self, id, subject, message, user, image):
+
+        # remove existing post with id
+        key = self.dataclient.key('posts', id)
+        old = self.dataclient.get(key)
+        old.key.delete()
+        
+        # create new id and post
+        date = datetime.now()
+        id = date.strftime('%d%m%Y%H%M%S%f')
+
+        #
+        key = self.dataclient.key('posts')
+        post = datastore.Entity(key=key)
+        post.update(
+            {   
+                'id': id,
+                'subject': subject,
+                'message': message,
+                'user': user.id,
+                'datetime': date
+            }
+        )
+
+        #
+        self.setimg(id, image)
+        self.dataclient.put(post)
+
+    #
+    #
+    #
     def getposts(self, id=None):
         result = []
 
