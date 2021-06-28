@@ -20,6 +20,5 @@ class UpdatePasswordForm(FlaskForm):
             if db.checkpassword(self.id.data, self.oldpassword.data):
                 return True
 
-            print('old password error')
             self.oldpassword.errors.append('The old password is incorrect')
             return False
