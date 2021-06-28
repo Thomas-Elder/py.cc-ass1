@@ -1,8 +1,9 @@
 import datetime
-
+import os
 
 from flask import Flask, request, url_for, redirect, render_template, flash
 from flask_login import login_user, logout_user, login_required, current_user, LoginManager
+from werkzeug.utils import secure_filename
 
 from db.db import DB
 
@@ -73,7 +74,8 @@ def register():
 
         if form.validate_on_submit():
 
-            db.setuser(form.id.data, form.username.data, form.password.data)
+            db.setuser(form.id.data, form.username.data, form.password.data, request.files['avatar'])
+
             return redirect(url_for('login'))
 
         else:
@@ -105,14 +107,16 @@ def forum():
     
     if request.method == 'POST':
         if form.validate_on_submit():
-            db.addpost(form.subject.data, form.message.data, current_user, form.image.data)
+            print(request.files['image'])
+            db.addpost(form.subject.data, form.message.data, current_user, request.files['image'])
+
             return redirect(url_for('forum'))
     else:
 
         img = db.getimg(current_user.id)
         posts = db.getposts()
         userposts = db.getposts(current_user.id)
-        print(userposts)
+
         return render_template(
             'forum.html', 
             form=form, 
