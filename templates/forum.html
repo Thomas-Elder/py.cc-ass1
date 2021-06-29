@@ -8,12 +8,16 @@
         <div class="media">
             <img src="{{ img }}" class="mr-3" alt="User image">
             <div class="media-body">
-                <h5 class="mt-0">{{ current_user.username }}</h5>
+                <h5 class="mt-0">
+                    <a href=" {{ url_for('userpage') }} ">
+                        {{ current_user.username }}
+                    </a>
+                </h5>
             </div>
         </div>
     </div>
         
-    <h3>New Post Area</h3>
+    <h3>Message Posting Area</h3>
     <div class="card">
         <form class="form-group" method="POST" enctype="multipart/form-data">
             {{ form.hidden_tag() }}
@@ -44,7 +48,7 @@
         </form>
     </div>
 
-    <h3>Forum Area</h3>
+    <h3>Message Display Area</h3>
 
     {% for post in posts %}
     <!-- Post -->
