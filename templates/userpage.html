@@ -3,8 +3,12 @@
 {% block content %}
 <div class="container">
     <div class="card"> 
-        <img class="card-img-top" src="{{ img }}" alt="Card image cap">
-        <div class="card-body">{{ current_user.username }}</div>
+        <div class="media">
+            <img src="{{ img }}" class="mr-3" alt="User image">
+            <div class="media-body">
+                <h5 class="mt-0">{{ current_user.username }}</h5>
+            </div>
+        </div>
     </div>
 
     <h3>Password Edit Area</h3>
@@ -25,25 +29,34 @@
             {% endfor %}
         </div>
         <div>
-            {{ updatepasswordform.submit() }}
+            {{ updatepasswordform.submit(class_="btn btn-primary") }}
         </div>
     </form>
 
     <h3>Post Edit Area</h3>
-    {% for post in userposts %}
+    {% for post, updatepostform in postandforms %}
     <div>
-        <div class="card">
-            <div>subject: {{ post.subject }}</div>
-            <div>message: {{ post.message }}</div>
-            <div>date: {{ post.datetime.ctime() }}</div>
-            <div>
-                <img src=" {{ post.img }} ">
+
+        <!-- Post -->
+        <div class="card"> 
+            <div class="media">
+                <img src="{{ post.img }}" class="mr-3" alt="Post image">
+                <div class="media-body">
+                    <h3 class="mt-0">{{ post.subject }}</h3>
+                    <div>Date: {{ post.datetime.ctime() }}</div>
+                    <div>{{ post.message }}</div>
+                    <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#a{{post.id}}" aria-expanded="false" aria-controls="a{{post.id}}">
+                        Edit
+                    </button>
+                </div>
             </div>
         </div>
-        <div>
-            <form action="{{ url_for('updatepost') }}" method="post" novalidate>
-                {{ updatepostform.hidden_tag() }}
-                {{ updatepostform.id(value=post.id) }}
+
+        <!-- Edit post -->
+        <div class="collapse" id="a{{post.id}}">
+            <form action="{{ url_for('updatepost') }}" method="post" enctype="multipart/form-data" novalidate>
+                {{ updatepostform.csrf_token() }}
+                {{ updatepostform.postid(value=post.id) }}
                 <div>
                     {{ updatepostform.subject.label }}<br>
                     {{ updatepostform.subject(size=32) }}<br>

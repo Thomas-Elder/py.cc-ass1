@@ -4,59 +4,58 @@
 <div class="container">
     <h3>User Area</h3>
 
-        <div>
-            <a href="{{url_for('userpage')}}">{{ current_user.username }}</a>
-            <img src="{{ img }}">
+    <div class="card"> 
+        <div class="media">
+            <img src="{{ img }}" class="mr-3" alt="User image">
+            <div class="media-body">
+                <h5 class="mt-0">{{ current_user.username }}</h5>
+            </div>
         </div>
+    </div>
         
     <h3>New Post Area</h3>
-
-    <form method="POST" enctype="multipart/form-data">
-        {{ form.hidden_tag() }}
-        <div>
-            {{ form.subject.label }}<br>
-            {{ form.subject(size=32) }}<br>
-            {% for error in form.subject.errors %}
-            <span style="color: red;">[{{ error }}]</span>
-            {% endfor %}
-        </div>
-        <div>
-            {{ form.message.label }}<br>
-            {{ form.message(size=32) }}<br>
-            {% for error in form.message.errors %}
-            <span style="color: red;">[{{ error }}]</span>
-            {% endfor %}
-        </div>
-        <div>
-            {{ form.image.label }}<br>
-            {{ form.image(size=32) }}<br>
-            {% for error in form.image.errors %}
-            <span style="color: red;">[{{ error }}]</span>
-            {% endfor %}
-        </div>
-        <div>
-            {{ form.submit() }}
-        </div>
-    </form>
+    <div class="card">
+        <form class="form-group" method="POST" enctype="multipart/form-data">
+            {{ form.hidden_tag() }}
+            <div>
+                {{ form.subject.label }}<br>
+                {{ form.subject(size=32) }}<br>
+                {% for error in form.subject.errors %}
+                <span style="color: red;">[{{ error }}]</span>
+                {% endfor %}
+            </div>
+            <div>
+                {{ form.message.label }}<br>
+                {{ form.message(size=32) }}<br>
+                {% for error in form.message.errors %}
+                <span style="color: red;">[{{ error }}]</span>
+                {% endfor %}
+            </div>
+            <div>
+                {{ form.image.label }}<br>
+                {{ form.image(size=32) }}<br>
+                {% for error in form.image.errors %}
+                <span style="color: red;">[{{ error }}]</span>
+                {% endfor %}
+            </div>
+            <div>
+                {{ form.submit(class_="btn btn-primary") }}
+            </div>
+        </form>
+    </div>
 
     <h3>Forum Area</h3>
 
     {% for post in posts %}
-    <div>
-        <div>
-            posted on {{ post.datetime.ctime() }}
-        </div>
-        <div>
-            by {{ post.user.username }}
-        </div>
-        <div>
-            subject {{ post.subject }}
-        </div>
-        <div>
-            message {{ post.message }}
-        </div>
-        <div>
-            <img src="{{ post.img }}">
+    <!-- Post -->
+    <div class="card"> 
+        <div class="media">
+            <img src="{{ post.img }}" class="mr-3" alt="Post image">
+            <div class="media-body">
+                <h3 class="mt-0">{{ post.subject }}</h3>
+                <div>Date: {{ post.datetime.ctime() }}</div>
+                <div>{{ post.message }}</div>      
+            </div>
         </div>
     </div>
     {% endfor %}
