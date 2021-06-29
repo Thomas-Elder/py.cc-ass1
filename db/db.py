@@ -1,6 +1,5 @@
 
 import io
-import os
 from google.cloud import datastore
 from google.cloud import storage
 
@@ -9,6 +8,8 @@ from datetime import datetime
 
 from .models.post import Post
 from .models.user import User
+
+from .initialusers import initialusers
 
 class DB:
 
@@ -19,7 +20,7 @@ class DB:
 
         self.dataclient = datastore.Client()
         self.storeclient = storage.Client()
-        # call initialusers (or maybe we call this soemthing else... )
+        #initialusers(self.dataclient, self.storeclient)
 
     #
     #
