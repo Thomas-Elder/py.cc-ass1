@@ -91,23 +91,18 @@ def register():
 #
 #
 #
-@app.route('/userpage/<postid>/<emptysubject>', defaults={'emptysubject': None}, methods=['GET'])
-@app.route('/userpage/<postid>/<emptymessage>', defaults={'emptymessage': None}, methods=['GET'])
-@app.route('/userpage/<postid>/<emptyimage>', defaults={'emptyimage': None}, methods=['GET'])
-@app.route('/userpage/<passworderror>', defaults={'passworderror': None}, methods=['GET'])
-@app.route('/userpage/', methods=['GET'])
+@app.route('/userpage', methods=['GET'])
 @login_required
-def userpage(passworderror=None, postid=None, emptysubject=None, emptymessage=None, emptyimage=None):
+def userpage():
     
     img = db.getimg(current_user.id)
 
     # Create update password form
     updatepasswordform = UpdatePasswordForm()
+    passworderror = request.args.get('passworderror')
 
     if passworderror != None and passworderror != 'None':
-        print('passworderror {}'.format(passworderror))
         updatepasswordform.oldpassword.errors = [passworderror]
-
 
     # Now for update post forms, we need an instance for each post.
     # So init a list, get all the user posts
@@ -208,4 +203,4 @@ def forum():
 # For local hosting
 #
 if __name__ == '__main__':
-    app.run(host='127.0.0.1', port=8080, debug=True)
+    app.run(host='127.0.0.1', port=8181, debug=True)
