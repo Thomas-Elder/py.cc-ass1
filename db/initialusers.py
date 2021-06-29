@@ -8,18 +8,18 @@ def initialusers(dataclient, storeclient):
     passwords = ['012345', '123456', '234567', '345678', '456789', '567890', '678901', '789012', '890123', '901234']
 
     # images
-    bucket = storeclient.get_bucket('cc-ass1-317800.appspot.com')
-    for id, img in ids, imgs:
-        existing = Image.open(img)
-        new = existing.resize((120, 120), Image.ANTIALIAS)
-        new.save(img)
+    #bucket = storeclient.get_bucket('cc-ass1-317800.appspot.com')
+    #for id, img in zip(ids, imgs):
+    #    existing = Image.open(img)
+    #    new = existing.resize((120, 120), Image.ANTIALIAS)
+    #    new.save(img)
 
-        blob = bucket.blob(id)
-        blob.upload_from_filename(img)
+    #    blob = bucket.blob(id)
+    #    blob.upload_from_filename(img)
 
 
     # users
-    for id, name, password in ids, names, passwords:
+    for id, name, password in zip(ids, names, passwords):
         key = dataclient.key('users', id)
         user = datastore.Entity(key=key)
         user.update(
@@ -29,3 +29,5 @@ def initialusers(dataclient, storeclient):
                 'password': password
             }
             )
+        
+        dataclient.put(user)
