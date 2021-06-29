@@ -91,20 +91,46 @@ def register():
 #
 #
 #
-@app.route('/userpage', methods=['GET'])
+@app.route('/userpage/<postid>/<emptysubject>', defaults={'emptysubject': None}, methods=['GET'])
+@app.route('/userpage/<postid>/<emptymessage>', defaults={'emptymessage': None}, methods=['GET'])
+@app.route('/userpage/<postid>/<emptyimage>', defaults={'emptyimage': None}, methods=['GET'])
+@app.route('/userpage/<passworderror>', defaults={'passworderror': None}, methods=['GET'])
+@app.route('/userpage/', methods=['GET'])
 @login_required
-def userpage():
+def userpage(passworderror=None, postid=None, emptysubject=None, emptymessage=None, emptyimage=None):
+    
+    img = db.getimg(current_user.id)
 
-    updatepasswordform = UpdatePasswordForm(id=current_user.id)
-    updatepostform = UpdatePostForm()
+    # Create update password form
+    updatepasswordform = UpdatePasswordForm()
+
+    if passworderror != None and passworderror != 'None':
+        print('passworderror {}'.format(passworderror))
+        updatepasswordform.oldpassword.errors = [passworderror]
+
+
+    # Now for update post forms, we need an instance for each post.
+    # So init a list, get all the user posts
+    updatepostforms = []
     userposts = db.getposts(current_user.id)
 
+    # Create a new postform for each post, add post data to it, for prefilling
+    for post in userposts:
+        updatepostform = UpdatePostForm(id=post.id)
+        updatepostform.subject.data = post.subject
+        updatepostform.message.data = post.message
+        updatepostforms.append(updatepostform)
+
+    # This creates a nifty tuple of posts and forms which we can iterate neatly
+    # over in the view.
+    postandforms = list(zip(userposts, updatepostforms))
+
     return render_template(
-        'userpage.html', 
-        userposts=userposts,
+        'userpage.html',
+        img=img,
         current_user=current_user,
         updatepasswordform=updatepasswordform,
-        updatepostform=updatepostform
+        postandforms=postandforms
         )
 
 #
@@ -115,8 +141,6 @@ def userpage():
 def updatepassword():
 
     updatepasswordform = UpdatePasswordForm(id=current_user.id)
-    updatepostform = UpdatePostForm()
-    userposts = db.getposts(current_user.id)
 
     if updatepasswordform.validate_on_submit():
 
@@ -126,14 +150,11 @@ def updatepassword():
         # and redir to login, need to log the user out so they can log in with new creds
         logout_user()
         return redirect(url_for('login'))
-    
-    return render_template(
-        'userpage.html', 
-        userposts=userposts,
-        current_user=current_user,
-        updatepasswordform=updatepasswordform,
-        updatepostform=updatepostform
-        )
+
+    else:
+        # redirect to userpage, passing the password form.
+        return redirect(url_for('userpage', passworderror=updatepasswordform.oldpassword.errors))
+
 
 #
 #
@@ -142,24 +163,16 @@ def updatepassword():
 @login_required
 def updatepost():
 
-    updatepasswordform = UpdatePasswordForm(id=current_user.id)
     updatepostform = UpdatePostForm()
-    userposts = db.getposts(current_user.id)
 
     if updatepostform.validate_on_submit():
         # push updated post to db
-        print(request.files['image'])
-        db.updatepost(updatepostform.id.data, updatepostform.subject.data, updatepostform.message.data, current_user, request.files['image'])
+        db.updatepost(updatepostform.postid.data, updatepostform.subject.data, updatepostform.message.data, current_user, request.files['image'])
         # and redir to forum
         return redirect(url_for('forum'))
-
-    return render_template(
-        'userpage.html', 
-        userposts=userposts,
-        current_user=current_user,
-        updatepasswordform=updatepasswordform,
-        updatepostform=updatepostform
-        )
+    else:
+        
+        return redirect(url_for('userpage'))
 
 #
 #
@@ -167,11 +180,12 @@ def updatepost():
 @app.route('/forum', methods=['GET', 'POST'])
 @login_required
 def forum():
+
     form = PostForm()
-    
+
     if request.method == 'POST':
         if form.validate_on_submit():
-            print(request.files['image'])
+
             db.addpost(form.subject.data, form.message.data, current_user, request.files['image'])
 
             return redirect(url_for('forum'))
