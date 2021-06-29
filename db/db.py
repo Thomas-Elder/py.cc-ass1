@@ -171,7 +171,7 @@ class DB:
         id = date.strftime('%d%m%Y%H%M%S%f')
 
         #
-        key = self.dataclient.key('posts')
+        key = self.dataclient.key('posts', id)
         post = datastore.Entity(key=key)
         post.update(
             {   
@@ -195,7 +195,7 @@ class DB:
         # remove existing post with id
         key = self.dataclient.key('posts', id)
         old = self.dataclient.get(key)
-        old.key.delete()
+        self.dataclient.delete(old.key)
         
         # create new id and post
         date = datetime.now()
