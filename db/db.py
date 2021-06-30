@@ -112,18 +112,47 @@ class DB:
         self.dataclient.put(user)
 
     #
+    # GET IMG
     #
-    #
-    def getimg(self, id):
+    def getimg(self, id) -> str:
+        """ Gets the public url of an image in Google Cloud Storage
+
+        Gets the public url of the image stored in a Google Cloud Storage
+        blob with this id.
+
+        Parameters
+        ----------
+        id : str
+
+        Returns
+        -------
+            str : the public url of the image
+        """
+
         self.bucket = storage.Client().get_bucket('cc-ass1-317800.appspot.com')
         blob = self.bucket.blob(id)
 
         return blob.public_url
 
     #
-    #
+    # SET AVATAR
     #
     def setavatar(self, id, image):
+        """ Sends a resized image to Google Cloud Storage
+
+        Takes the given image and resizes it to 120*120 before
+        storing it in Google Cloud Storage, creating a blob with 
+        the id passed.
+
+        Parameters
+        ----------
+        id : str
+        image : FileStorage object
+
+        Returns
+        -------
+            None
+        """
 
         # Get project bucket, and create/access blob for this id
         self.bucket = storage.Client().get_bucket('cc-ass1-317800.appspot.com')
@@ -147,9 +176,23 @@ class DB:
         blob.upload_from_string(img_byte_arr, content_type='image/jpeg')
 
     #
+    # SET IMAGE
     #
-    #
-    def setimg(self, id, image):
+    def setimg(self, id, image) -> None:
+        """ Sends an image to Google Cloud Storage
+
+        Takes the given image and stores it in Google Cloud Storage,
+        creating a blob with the id passed. 
+
+        Parameters
+        ----------
+        id : str
+        image : FileStorage object
+
+        Returns
+        -------
+            None
+        """
 
         # Get project bucket, and create/access blob for this id
         self.bucket = storage.Client().get_bucket('cc-ass1-317800.appspot.com')
@@ -189,7 +232,7 @@ class DB:
             return False
 
     #
-    #
+    # ADD POST
     #
     def addpost(self, subject, message, user, image) -> None:
         """ Adds post information to datastore and gcs
@@ -236,7 +279,7 @@ class DB:
         self.dataclient.put(post)
 
     #
-    #
+    # UPDATE POST
     #
     def updatepost(self, id, subject, message, user, image) -> None:
         """ Updates a post
@@ -284,7 +327,7 @@ class DB:
         self.dataclient.put(post)
 
     #
-    #
+    # GET POSTS
     #
     def getposts(self, id=None) -> list:
         """ Returns a list of up to 10 posts.
