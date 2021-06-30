@@ -188,15 +188,22 @@ def forum():
 
         img = db.getimg(current_user.id)
         posts = db.getposts()
-        userposts = db.getposts(current_user.id)
+        usersandposts = []
+
+        for post in posts:
+            poster = db.getuser(post.user.id)
+            username = poster.username
+            useravatar = db.getimg(poster.id)
+
+            usersandposts.append({'post':post, 'username':username, 'useravatar':useravatar})
 
         return render_template(
             'forum.html', 
             form=form, 
             current_user=current_user,
             posts=posts,
-            userposts=userposts,
-            img=img
+            img=img,
+            usersandposts=usersandposts
             )
 
 #
