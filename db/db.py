@@ -75,7 +75,7 @@ class DB:
             return True
 
     #
-    #
+    # SET USER
     #
     def setuser(self, id, username, password, image):
 
@@ -93,9 +93,24 @@ class DB:
         self.setavatar(id, image)
 
     #
+    # SET PASSWORD
     #
-    #
-    def setpassword(self, id, newpassword):
+    def setpassword(self, id, newpassword) -> None:
+        """ Sets the password of the user with id, to new password
+
+        Gets the user from datastore with this id, and update it's 
+        password to newpassword.
+
+        Parameters
+        ----------
+        id : str
+        newpassword : str
+
+        Returns
+        -------
+            None
+        """
+
         key = self.dataclient.key('users', id)
         user = self.dataclient.get(key)
 
