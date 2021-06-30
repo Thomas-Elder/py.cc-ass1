@@ -217,7 +217,24 @@ class DB:
     #
     #
     #
-    def updatepost(self, id, subject, message, user, image):
+    def updatepost(self, id, subject, message, user, image) -> None:
+        """ Updates a post
+
+        Takes the subject, message, user and image params passed, and updates
+        the post with key.id equal to the id passed in.
+
+        Parameters
+        ----------
+        id : str
+        subject : str
+        message : str
+        user : User
+        image : FileStorage object
+
+        Returns
+        -------
+            None
+        """
 
         # remove existing post with id
         key = self.dataclient.key('posts', id)
@@ -248,7 +265,7 @@ class DB:
     #
     #
     #
-    def getposts(self, id=None) -> list:
+        def getposts(self, id=None) -> list:
         """ Returns a list of up to 10 posts.
 
         Returns a list of up to 10 posts for the given id, or a list of up to
