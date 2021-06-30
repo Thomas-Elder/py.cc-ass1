@@ -248,7 +248,21 @@ class DB:
     #
     #
     #
-    def getposts(self, id=None):
+    def getposts(self, id=None) -> list:
+        """ Returns a list of up to 10 posts.
+
+        Returns a list of up to 10 posts for the given id, or a list of up to
+        10 posts from all users if not given.
+
+        Parameters
+        ----------
+        id : str, optional
+
+        Returns
+        -------
+            a list of Post class objects
+        """
+
         result = []
 
         if id == None:
