@@ -90,7 +90,7 @@ class DB:
             )
 
         self.dataclient.put(user)
-        self.setimg(id, image)
+        self.setavatar(id, image)
 
     #
     #
@@ -123,7 +123,7 @@ class DB:
     #
     #
     #
-    def setimg(self, id, image):
+    def setavatar(self, id, image):
 
         # Get project bucket, and create/access blob for this id
         self.bucket = storage.Client().get_bucket('cc-ass1-317800.appspot.com')
@@ -132,6 +132,32 @@ class DB:
         # Resize image
         imagetosave = Image.open(image)
         imagetosave.thumbnail((120, 120)) # resize img to avatar size
+        imagetosave = imagetosave.convert('RGB') # convert to RGB
+
+        # Convert to byte array for upload to gcs
+        img_byte_arr = io.BytesIO() 
+        imagetosave.save(img_byte_arr, format='JPEG') 
+        img_byte_arr = img_byte_arr.getvalue()
+
+        # Set blob.cache_control = 'public, max-age=0' as GC storage caches an image for an hour by default, 
+        # but you want the user to see the changed avatar immediately.
+        blob.cache_control = 'public, max-age=0' 
+
+        # Upload.
+        blob.upload_from_string(img_byte_arr, content_type='image/jpeg')
+
+    #
+    #
+    #
+    def setimg(self, id, image):
+
+        # Get project bucket, and create/access blob for this id
+        self.bucket = storage.Client().get_bucket('cc-ass1-317800.appspot.com')
+        blob = self.bucket.blob(id)
+
+        # Resize image
+        imagetosave = Image.open(image)
+        #imagetosave.thumbnail((120, 120)) # resize img to avatar size
         imagetosave = imagetosave.convert('RGB') # convert to RGB
 
         # Convert to byte array for upload to gcs
