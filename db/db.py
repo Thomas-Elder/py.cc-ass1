@@ -289,4 +289,6 @@ class DB:
                     datetime=post['datetime']
                 ))
 
+        result.sort(key=lambda r: r.datetime, reverse=True)
+
         return result
