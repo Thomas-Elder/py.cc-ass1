@@ -50,16 +50,24 @@
 
     <h3>Message Display Area</h3>
 
-    {% for post in posts %}
+    {% for userpost in usersandposts %}
     <!-- Post -->
-    <div class="card"> 
+    <div class="card">
         <div class="media">
-            <img src="{{ post.img }}" class="mr-3" alt="Post image">
+            <img src="{{ userpost['useravatar'] }}" class="mr-3" alt="User image">
             <div class="media-body">
-                <h3 class="mt-0">{{ post.subject }}</h3>
-                <div>Date: {{ post.datetime.ctime() }}</div>
-                <div>{{ post.message }}</div>      
+                <h5 class="mt-0">
+                    {{ userpost['username'] }}
+                </h5>
+                <h5 class="mt-0">
+                    {{ userpost['post'].subject }}
+                </h5>
+                <div>Date: {{ userpost['post'].datetime.ctime() }}</div>
+                <div>{{ userpost['post'].message }}</div>      
             </div>
+        </div>
+        <div>
+            <img src="{{ userpost['post'].img }}" class="img-fluid" alt="Post image">
         </div>
     </div>
     {% endfor %}
