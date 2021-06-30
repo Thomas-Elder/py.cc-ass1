@@ -1,11 +1,9 @@
-import datetime
+
 from forms.updatepost import UpdatePostForm
 from forms.updatepassword import UpdatePasswordForm
-import os
 
-from flask import Flask, request, url_for, redirect, render_template, flash
+from flask import Flask, request, url_for, redirect, render_template
 from flask_login import login_manager, login_user, logout_user, login_required, current_user, LoginManager
-from werkzeug.utils import secure_filename
 
 from db.db import DB
 
