@@ -191,7 +191,28 @@ class DB:
     #
     #
     #
-    def addpost(self, subject, message, user, image):
+    def addpost(self, subject, message, user, image) -> None:
+        """ Adds post information to datastore and gcs
+
+        Takes the subject, message, user and image params passed, and 
+        creates a new datastore record in the posts kind, and adds a new 
+        blob to gcs to store the image.
+
+        It creates an id based on the current date and time, which is how 
+        posts are selected on get. It also passes the user.id to datastore
+        so that we can get the user for this post.
+
+        Parameters
+        ----------
+        subject : str
+        message : str
+        user : User object
+        image : FileStorage object
+
+        Returns
+        -------
+            None
+        """
 
         #
         date = datetime.now()
@@ -265,7 +286,7 @@ class DB:
     #
     #
     #
-        def getposts(self, id=None) -> list:
+    def getposts(self, id=None) -> list:
         """ Returns a list of up to 10 posts.
 
         Returns a list of up to 10 posts for the given id, or a list of up to
