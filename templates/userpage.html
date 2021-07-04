@@ -44,15 +44,16 @@
         <!-- Post -->
         <li class="card"> 
             <div class="media">
-                <img src="{{ post.img }}" class="mr-3" alt="Post image">
                 <div class="media-body">
-                    <h3 class="mt-0">{{ post.subject }}</h3>
+                    <h5 class="mt-0">
+                        {{ post.subject }}
+                    </h5>
                     <div>Date: {{ post.datetime.ctime() }}</div>
-                    <div>{{ post.message }}</div>
-                    <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#a{{post.id}}" aria-expanded="false" aria-controls="a{{post.id}}">
-                        Edit
-                    </button>
+                    <div>{{ post.message }}</div>      
                 </div>
+            </div>
+            <div>
+                <img src="{{ post.img }}" class="img-fluid" alt="Post image">
             </div>
         
 
