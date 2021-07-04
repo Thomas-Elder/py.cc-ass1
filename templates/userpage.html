@@ -49,12 +49,15 @@
                         {{ post.subject }}
                     </h5>
                     <div>Date: {{ post.datetime.ctime() }}</div>
-                    <div>{{ post.message }}</div>      
+                    <div>{{ post.message }}</div>     
                 </div>
             </div>
             <div>
                 <img src="{{ post.img }}" class="img-fluid" alt="Post image">
             </div>
+            <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#a{{post.id}}" aria-expanded="false" aria-controls="a{{post.id}}">
+                Edit
+            </button> 
         
 
             <!-- Edit post -->

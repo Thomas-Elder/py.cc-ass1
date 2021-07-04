@@ -56,6 +56,9 @@ class DB:
         query.add_filter('username', '=', username)
         result = query.fetch()
 
+        for r in result:
+            print(r)
+
         if result.num_results == 0:
             return False
         else:
